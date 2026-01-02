@@ -113,7 +113,7 @@ function ode = modelo_mhe
           6.462e-08*G_2*w_vent^4 + 2.888e-10*w_vent^5;
     
     % Implementación de filtro de segundo orden para UA (añadir dinámica)
-    d2_UA = (UAs - UA)/tau_UA - 2*tau_UA/tau_UA*d_UA;   % [kW/(°C·s)]
+    d2_UA = (UAs - UA)/(tau_UA)^2 - 2/tau_UA*d_UA;   % [kW/(°C·s)]
     
     % Cálculo de diferencias de temperatura para DTML
     diff_T_out_C1 = T_out_C1 - T_amb;   % [°C]
