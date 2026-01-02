@@ -109,7 +109,7 @@ function [solver, u_min, u_max, g_min, g_max] = constructor_mpc_SS(N_h, N_c, W_d
                     x_kp1(5)];  % T_out_D1
         
         % Término de seguimiento de referencias en función objetivo
-        e = [(y_ctrl_k(1) - ref_k(1))^2;    % Error cuadrático en altura
+        e = [y_ctrl_k(1) - ref_k(1);    % Error cuadrático en altura
              y_ctrl_k(2) - ref_k(2)];       % Error lineal en temperatura
         J = J + e'*W_track*e;
         
@@ -121,7 +121,8 @@ function [solver, u_min, u_max, g_min, g_max] = constructor_mpc_SS(N_h, N_c, W_d
         g = [g; h_w_D1;     % h_w_D1
                 x_kp1(1);   % h_w_C1
                 x_kp1(4);   % T_in_D1
-                x_kp1(5)];  % T_out_D1
+                x_kp1(5);   % T_out_D1
+                x_kp1(6)];  % T_out_C1
         
         % Actualización para siguiente iteración
         u_km1 = u_k;    % Control
@@ -163,7 +164,8 @@ function [solver, u_min, u_max, g_min, g_max] = constructor_mpc_SS(N_h, N_c, W_d
         g = [g; h_w_D1;     % h_w_D1
                 x_kp1(1);   % h_w_C1
                 x_kp1(4);   % T_in_D1
-                x_kp1(5)];  % T_out_D1
+                x_kp1(5);   % T_out_D1
+                x_kp1(6)];  % T_out_C1
         
         % Actualización para siguiente iteración
         x_k = x_kp1 + e_act;    % Estados
@@ -188,13 +190,15 @@ function [solver, u_min, u_max, g_min, g_max] = constructor_mpc_SS(N_h, N_c, W_d
     g_min = repmat([0.1*p_h_D1;         % h_w_C1 mínimo
                     0.1*p_h_C1;         % h_w_C1 mínimo
                     p_T_amb - 5;        % T_in_D1 mínimo
-                    p_T_amb - 5], ...   % T_out_D1 mínimo
+                    p_T_amb - 5;        % T_out_D1 mínimo
+                    p_T_amb - 5], ...   % T_out_C1 mínimo
                     N_h, 1);
     
     g_max = repmat([0.95*p_h_D1;    % h_w_C1 máximo
                     0.92*p_h_C1;    % h_w_C1 máximo
-                    80;             % T_in_D1 máximo
-                    80], ...        % T_out_D1 máximo
+                    60;             % T_in_D1 máximo
+                    60;             % T_out_D1 máximo
+                    60], ...        % T_out_C1 máximo
                     N_h, 1);
     
     % =====================================================================
