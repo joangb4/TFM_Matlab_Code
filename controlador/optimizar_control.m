@@ -1,4 +1,7 @@
-function [u_ctrl_seq, u_ctrl_k, x_pred, lam_g_ctrl, lam_x_ctrl, status, n_iter] = optimizar_control(solver, u_ctrl_seq_0, lam_g_ctrl_0, lam_x_ctrl_0, u_ctrl_min, u_ctrl_max, g_ctrl_min, g_ctrl_max, x_est_k, u_k, u_resist, ref_k, x_pred_0, y_meas_k, simulador, w_track, R_ctrl, param_modelo)
+function [u_ctrl_seq, u_ctrl_k, x_pred, lam_g_ctrl, lam_x_ctrl, status, n_iter] = optimizar_control(solver, u_ctrl_seq_0, lam_g_ctrl_0, lam_x_ctrl_0, ...
+                                                                                                    u_ctrl_min, u_ctrl_max, g_ctrl_min, g_ctrl_max, ...
+                                                                                                    x_est_k, u_k, u_resist, ref_k, x_pred_0, y_meas_k, ...
+                                                                                                    simulador, w_track, R_ctrl, param_modelo)
     import casadi.*
     
     % OPTIMIZAR_CONTROL
@@ -115,7 +118,7 @@ function [u_ctrl_seq, u_ctrl_k, x_pred, lam_g_ctrl, lam_x_ctrl, status, n_iter] 
         % Extraer solución de la secuencia
         u_ctrl_k = [u_ctrl_seq(1);  % a_v_1
                     u_ctrl_seq(2);  % a_v_2
-                    u_ctrl_seq(3)]; % vel_vent
+                    u_ctrl_seq(3)]; % w_vent
     end
     
     % =====================================================================
