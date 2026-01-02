@@ -8,9 +8,9 @@ import casadi.*
 
 fprintf('=== SIMULACIÓN Y VALIDACIÓN DEL CONTROLADOR ===\n');
 
-%% ========================================================================
-%% CONFIGURACIÓN DEL SISTEMA
-%% ========================================================================
+% ========================================================================
+% CONFIGURACIÓN DEL SISTEMA
+% ========================================================================
 
 fprintf('Configurando el sistema...\n');
 
@@ -18,9 +18,9 @@ nx      = 6;    % Nº estados
 nu      = 3;    % Nº entradas
 dt_ctrl = 5;    % Periodo control [s]
 
-%% ========================================================================
-%% DEFINICIÓN DE PARÁMETROS DEL MODELO FÍSICO
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE PARÁMETROS DEL MODELO FÍSICO
+% ========================================================================
 
 fprintf('Configurando parámetros del modelo físico...\n');
 
@@ -38,9 +38,9 @@ p.W_resist = 0.8*1;     % Potencia resistencia [kW]
 
 param_modelo = struct2array(p)';
 
-%% ========================================================================
-%% DEFINICIÓN DE PARÁMETROS DEL MODELO DEL CONTROLADOR
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE PARÁMETROS DEL MODELO DEL CONTROLADOR
+% ========================================================================
 
 fprintf('Configurando parámetros del modelo del controlador...\n');
 
@@ -57,9 +57,9 @@ p_ctrl.W_resist = 1;        % Potencia resistencia (kW)
 
 param_modelo_ctrl = struct2array(p_ctrl)';
 
-%% ========================================================================
-%% DEFINICIÓN DE CONSTANTES Y PARÁMETROS DE SIMULACIÓN
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE CONSTANTES Y PARÁMETROS DE SIMULACIÓN
+% ========================================================================
 
 fprintf('Configurando constantes y parámetros de simulación...\n');
 
@@ -80,9 +80,9 @@ p_A_D1 = pi*p_r_D1^2;   % [m²]
 t_tot = 3600;                       % Total de tiempo de simulación [s]
 N_m   = floor((t_tot + 1)/dt_ctrl); % Número de iteraciones [p]
 
-%% ========================================================================
-%% CONFIGURACIÓN DEL ESTIMADOR MHE
-%% ========================================================================
+% ========================================================================
+% CONFIGURACIÓN DEL ESTIMADOR MHE
+% ========================================================================
 
 fprintf('Configurando estimador MHE...\n');
 
@@ -99,9 +99,9 @@ W_reg = diag([2, 2, 2, 2, 2, 2]./[p_h_C1, 0.5, 1, 80, 80, 80]);
 
 fprintf('Horizonte MHE: %d pasos, Pesos configurados\n', N_e);
 
-%% ========================================================================
-%% CONFIGURACIÓN DEL CONTROLADOR MPC
-%% ========================================================================
+% ========================================================================
+% CONFIGURACIÓN DEL CONTROLADOR MPC
+% ========================================================================
 
 fprintf('Configurando controlador MPC...\n');
 
@@ -120,9 +120,9 @@ W_delta = diag([3, 3, 0.5]./[1, 1, 1]); % Pesos individuales
 
 fprintf('Horizonte MPC: %d pasos de predicción, %d pasos de control, Pesos configurados\n', N_h, N_c);
 
-%% ========================================================================
-%% CONSTRUCCIÓN DE MODELO Y SOLVER DEL OBSERVADOR
-%% ========================================================================
+% ========================================================================
+% CONSTRUCCIÓN DE MODELO Y SOLVER DEL OBSERVADOR
+% ========================================================================
 
 fprintf('Construyendo modelo dinámico y solver MHE...\n');
 
@@ -138,9 +138,9 @@ simulador_mhe = constructor_integrador(ode_mhe, dt_ctrl);
 
 fprintf('Solver MHE construido exitosamente\n');
 
-%% ========================================================================
-%% CONSTRUCCIÓN DE MODELO Y SOLVER DEL CONTROLADOR
-%% ========================================================================
+% ========================================================================
+% CONSTRUCCIÓN DE MODELO Y SOLVER DEL CONTROLADOR
+% ========================================================================
 
 fprintf('Construyendo modelo dinámico y solver MPC...\n');
 
@@ -156,9 +156,9 @@ simulador_mpc = constructor_integrador(ode_mpc, dt_ctrl);
 
 fprintf('Solver MPC construido exitosamente\n');
 
-%% ========================================================================
-%% INICIALIZACIÓN DE OBSERVADOR Y CONTROLADOR
-%% ========================================================================
+% ========================================================================
+% INICIALIZACIÓN DE OBSERVADOR Y CONTROLADOR
+% ========================================================================
 
 fprintf('Inicializando controlador con condiciones iniciales...\n');
 
@@ -189,9 +189,9 @@ fprintf(['Estado inicial: h_C1 = %.3f m, UA = %.3f kW/°C, d_UA = %.3f kW/(°C·
          '                T_in_D1 = %.1f °C, T_out_D1 = %.1f °C, T_out_C1 = %.1f °C\n'], ...
         x_k(1), x_k(2), x_k(3), x_k(4), x_k(5), x_k(6));
 
-%% ========================================================================
-%% GENERACIÓN DE REFERENCIAS
-%% ========================================================================
+% ========================================================================
+% GENERACIÓN DE REFERENCIAS
+% ========================================================================
 
 % Referencias de h_w_D1 en 50% (evita vaciado-llenado como sol)
 ref_h_D1 = 50*p_h_D1/100;
@@ -215,9 +215,9 @@ ref_T_out_D1 = vertcat(30*ones(150, 1), ...
 ref          = [ref_h_D1, ref_T_out_D1];
 ref_reshaped = reshape(ref.', [], 1);
 
-%% ========================================================================
-%% BUCLE PRINCIPAL DE CONTROL
-%% ========================================================================
+% ========================================================================
+% BUCLE PRINCIPAL DE CONTROL
+% ========================================================================
 
 fprintf('\n=== INICIANDO CONTROL MPC ===\n');
 
