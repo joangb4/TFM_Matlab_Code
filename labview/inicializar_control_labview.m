@@ -5,17 +5,17 @@
 
 import casadi.*
 
-%% ========================================================================
-%% CONFIGURACIÓN DEL SISTEMA
-%% ========================================================================
+% ========================================================================
+% CONFIGURACIÓN DEL SISTEMA
+% ========================================================================
 
 nx      = 6;    % Nº estados
 nu      = 3;    % Nº entradas
 dt_ctrl = 5;    % Periodo control [s]
 
-%% ========================================================================
-%% DEFINICIÓN DE PARÁMETROS DEL MODELO DEL CONTROLADOR
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE PARÁMETROS DEL MODELO DEL CONTROLADOR
+% ========================================================================
 
 p_ctrl.r_D1     = 0.108;    % Radio tanque D1 (m)
 p_ctrl.h_D1     = 0.5;      % Altura tanque D1 (m) 
@@ -30,9 +30,9 @@ p_ctrl.W_resist = 1;        % Potencia resistencia (kW)
 
 param_modelo_ctrl = struct2array(p_ctrl)';
 
-%% ========================================================================
-%% DEFINICIÓN DE CONSTANTES Y PARÁMETROS DE SIMULACIÓN
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE CONSTANTES Y PARÁMETROS DE SIMULACIÓN
+% ========================================================================
 
 % Parámetros geométricos y físicos del sistema
 p_r_D1    = param_modelo_ctrl(1);   % Radio tanque D1 [m]
@@ -51,9 +51,9 @@ p_A_D1 = pi*p_r_D1^2;   % [m²]
 t_tot = 3600;                       % Total de tiempo de simulación [s]
 N_m   = floor((t_tot + 1)/dt_ctrl); % Número de iteraciones [p]
 
-%% ========================================================================
-%% CONFIGURACIÓN DEL ESTIMADOR MHE
-%% ========================================================================
+% ========================================================================
+% CONFIGURACIÓN DEL ESTIMADOR MHE
+% ========================================================================
 
 % Matriz de pesos para ajuste a mediciones (normalizado)
 W_meas = diag([0.1, 0.1, 1, 1, 1]./[15, 100, p_h_C1, 80, 80]);
@@ -63,9 +63,9 @@ W_meas = diag([0.1, 0.1, 1, 1, 1]./[15, 100, p_h_C1, 80, 80]);
 Q_last = diag([2, 2, 2, 2, 2, 2]./[p_h_C1, 0.5, 1, 80, 80, 80]);
 %             [h_w_C1 UA d_UA T_in_D1 T_out_D1 T_out_C1]
 
-%% ========================================================================
-%% CONFIGURACIÓN DEL CONTROLADOR MPC
-%% ========================================================================
+% ========================================================================
+% CONFIGURACIÓN DEL CONTROLADOR MPC
+% ========================================================================
 
 % Matriz de pesos por error de seguimiento (h_w_D1 y T_out_D1) (normalizado)
 % W_track = diag([1, 10]./[p_h_D1, 80]);
@@ -77,9 +77,9 @@ Q_last = diag([2, 2, 2, 2, 2, 2]./[p_h_C1, 0.5, 1, 80, 80, 80]);
 W_delta = diag([3, 3, 0.5]./[1, 1, 1]); % Pesos individuales
 %              [a_v_1 a_v_2 w_vent]
 
-%% ========================================================================
-%% CONSTRUCCIÓN DE MODELO Y SOLVER DEL OBSERVADOR
-%% ========================================================================
+% ========================================================================
+% CONSTRUCCIÓN DE MODELO Y SOLVER DEL OBSERVADOR
+% ========================================================================
 
 % Crear modelo dinámico simbólico
 ode_mhe = modelo_mhe;
@@ -91,9 +91,9 @@ simulador_mhe = constructor_integrador(ode_mhe, dt_ctrl);
 [solver_mhe, v_est_min, v_est_max, g_est_min, g_est_max] = ...
     constructor_mhe_MS(N_e, W_meas, Q_last, param_modelo_ctrl, simulador_mhe);
 
-%% ========================================================================
-%% CONSTRUCCIÓN DE MODELO Y SOLVER DEL CONTROLADOR
-%% ========================================================================
+% ========================================================================
+% CONSTRUCCIÓN DE MODELO Y SOLVER DEL CONTROLADOR
+% ========================================================================
 
 % Crear modelo dinámico simbólico
 ode_mpc = modelo_mpc;
@@ -105,9 +105,9 @@ simulador_mpc = constructor_integrador(ode_mpc, dt_ctrl);
 [solver_mpc, u_ctrl_min, u_ctrl_max, g_ctrl_min, g_ctrl_max] = ...
     constructor_mpc_SS(N_h, N_c, W_delta, param_modelo_ctrl, simulador_mpc);
 
-%% ========================================================================
-%% INICIALIZACIÓN DE OBSERVADOR Y CONTROLADOR
-%% ========================================================================
+% ========================================================================
+% INICIALIZACIÓN DE OBSERVADOR Y CONTROLADOR
+% ========================================================================
 
 % Estado inicial
 x_k = [y_meas_k(1);     % h_w_C1 desde medición [m] 
