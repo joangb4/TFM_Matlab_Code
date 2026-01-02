@@ -29,4 +29,3 @@ obtener_control_labview;
 u_k = u_k';
 u_est_k = u_est_k';
 x_est_k = x_est_k';
-
