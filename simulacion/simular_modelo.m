@@ -6,9 +6,9 @@
 clear; clc;
 import casadi.*
 
-%% ========================================================================
-%% CARGA Y PREPARACIÓN DE DATOS EXPERIMENTALES
-%% ========================================================================
+% ========================================================================
+% CARGA Y PREPARACIÓN DE DATOS EXPERIMENTALES
+% ========================================================================
 
 fprintf('=== SIMULACIÓN Y VALIDACIÓN DEL MODELO ===\n');
 fprintf('Cargando datos experimentales...\n');
@@ -28,9 +28,9 @@ t_tot  = exp_t(end);    % Tiempo total experimento [s]
 u_hist      = exp_u;                                            % [a_v_1, a_v_2, w_vent]
 y_meas_hist = [exp_niv(:, 4), exp_temp(:, 1), exp_temp(:, 2)];  % [h_C1, T_in_D1, T_out_D1]
 
-%% ========================================================================
-%% DEFINICIÓN DE PARÁMETROS DEL MODELO FÍSICO
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE PARÁMETROS DEL MODELO FÍSICO
+% ========================================================================
 
 fprintf('Configurando parámetros del modelo físico...\n');
 
@@ -52,9 +52,9 @@ param_modelo = struct2array(p)';
 nx = 6; % Número de estados
 nu = 3; % Número de entradas
 
-%% ========================================================================
-%% DEFINICIÓN DE CONSTANTES Y PARÁMETROS DE SIMULACIÓN
-%% ========================================================================
+% ========================================================================
+% DEFINICIÓN DE CONSTANTES Y PARÁMETROS DE SIMULACIÓN
+% ========================================================================
 
 fprintf('Configurando constantes y parámetros de simulación...\n');
 
@@ -79,9 +79,9 @@ N_m   = floor((t_tot + 1)/dt_sim);
 
 fprintf('Datos cargados: %d muestras, periodo de simulación: %d s\n', N_m, dt_sim);
 
-%% ========================================================================
-%% CONSTRUCCIÓN DE MODELO Y SOLVER
-%% ========================================================================
+% ========================================================================
+% CONSTRUCCIÓN DE MODELO Y SOLVER
+% ========================================================================
 
 fprintf('Construyendo modelo dinámico y solver...\n');
 
@@ -91,9 +91,9 @@ ode = modelo_mpc;
 % Construir simulador
 simulador = constructor_integrador(ode, dt_sim);
 
-%% ========================================================================
-%% INICIALIZACIÓN DEL SIMULADOR
-%% ========================================================================
+% ========================================================================
+% INICIALIZACIÓN DEL SIMULADOR
+% ========================================================================
 
 fprintf('Inicializando simulador con condiciones iniciales...\n');
 
@@ -114,9 +114,9 @@ fprintf(['Estado inicial: h_C1 = %.3f m, UA = %.3f kW/°C, d_UA = %.3f kW/(°C·
          '                T_in_D1 = %.1f °C, T_out_D1 = %.1f °C, T_out_C1 = %.1f °C\n'], ...
         x_k(1), x_k(2), x_k(3), x_k(4), x_k(5), x_k(6));
 
-%% ========================================================================
-%% BUCLE PRINCIPAL DE SIMULACIÓN
-%% ========================================================================
+% ========================================================================
+% BUCLE PRINCIPAL DE SIMULACIÓN
+% ========================================================================
 
 fprintf('\n=== INICIANDO SIMULADOR ===\n');
 
