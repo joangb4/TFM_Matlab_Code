@@ -1,4 +1,4 @@
-function [solver, v_min, v_max, g_min, g_max] = constructor_mhe_MS(N_e, W_meas, Q_reg, param_modelo, simulador)
+function [solver, v_min, v_max, g_min, g_max] = constructor_mhe_MS(N_e, W_meas, W_reg, param_modelo, simulador)
     % CONSTRUCTOR_MHE_MS - Construye optimizador MHE con Multiple Shooting
     %
     % Descripción:
@@ -9,7 +9,7 @@ function [solver, v_min, v_max, g_min, g_max] = constructor_mhe_MS(N_e, W_meas, 
     % Entradas:
     %   N_e          - Horizonte de estimación [p]
     %   W_meas       - Matriz de pesos de mediciones
-    %   Q_last       - Matriz de pesos de regularización
+    %   W_last       - Matriz de pesos de regularización
     %   param_modelo - Parámetros del modelo físico
     %   simulador    - Integrador numérico del modelo
     %
@@ -106,7 +106,7 @@ function [solver, v_min, v_max, g_min, g_max] = constructor_mhe_MS(N_e, W_meas, 
     
     % Penalización por cambios de estados respecto a estimación anterior
     dx_last = x_est(1:nx) - x_est_last(nx + 1 : 2*nx);
-    J = J + dx_last'*Q_reg*dx_last;
+    J = J + dx_last'*W_reg*dx_last;
     
     % =====================================================================
     % DEFINICIÓN DE LÍMITES Y RESTRICCIONES
