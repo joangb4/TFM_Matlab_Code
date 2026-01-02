@@ -3,7 +3,7 @@ function ode = modelo_mpc
     %
     % Descripción:
     %   Implementa el modelo matemático del sistema. El modelo incluye:
-    %   - Balance volumétrico (nivel de agua)
+    %   - Balance volumétrico (niveles de agua)
     %   - Balance energético (temperaturas)
     %
     % Estados (nx = 6):
