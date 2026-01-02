@@ -80,9 +80,9 @@ function ode = modelo_mpc
 
     % Bloqueo de caudales cuando h_w = 0 (mediante sigmoide)
     h_min = 0.01;   % [m]
-    slope = log(1/1e-5 - 1)/h_min;
-    Q_1_Lmin = sigmoide(h_w_D1, h_min, slope)*Q_1_Lmin;
-    Q_2_Lmin = sigmoide(h_w_C1, h_min, slope)*Q_2_Lmin;
+    slope_h = log(1/1e-5 - 1)/h_min;
+    Q_1_Lmin = sigmoide(h_w_D1, h_min, slope_h)*Q_1_Lmin;
+    Q_2_Lmin = sigmoide(h_w_C1, h_min, slope_h)*Q_2_Lmin;
 
     % Conversión de unidades a SI
     Q_1 = Q_1_Lmin/60/1000; % [m³/s]
@@ -114,17 +114,22 @@ function ode = modelo_mpc
           6.462e-08*G_2*w_vent^4 + 2.888e-10*w_vent^5;
     
     % Implementación de filtro de segundo orden para UA (añadir dinámica)
-    d2_UA = (UAs - UA)/(tau_UA)^2 - (2/tau_UA)*d_UA;   % [kW/(°C·s)]
+    d2_UA = (UAs - UA)/tau_UA^2 - 2/tau_UA*d_UA;    % [kW/(°C·s²)]
     
     % Cálculo de diferencias de temperatura para DTML
     diff_T_out_C1 = T_out_C1 - T_amb;   % [°C]
     diff_T_in_D1  = T_in_D1 - T_amb;    % [°C]
 
-    % Regularización para evitar problemas numéricos (softplus)
-    epsilon_T = 1e-6;
-    diff_T_out_C1 = sqrt(diff_T_out_C1^2 + epsilon_T);
-    diff_T_in_D1  = sqrt(diff_T_in_D1^2 + epsilon_T);
-        
+    % Regularización para evitar problemas numéricos (mediante sigmoide)
+    dT_min  = 0.01;
+    slope_T = log(1/1e-5 - 1)/dT_min;
+
+    sig_T_out_C1 = 1/(1 + exp(-slope_T*(diff_T_out_C1 - dT_min)));
+    sig_T_in_D1  = 1/(1 + exp(-slope_T*(diff_T_in_D1 - dT_min)));
+
+    diff_T_out_C1 = sig_T_out_C1*diff_T_out_C1;
+    diff_T_in_D1 = sig_T_in_D1*diff_T_in_D1;
+    
     % Diferencia de temperatura media logarítmica (DTML) - Aproximación Chen
     DTML = (diff_T_out_C1*diff_T_in_D1*(diff_T_out_C1 + diff_T_in_D1)/2)^(1/3); % [°C]
     
